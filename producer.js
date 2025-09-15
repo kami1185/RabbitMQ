@@ -7,6 +7,7 @@ async function sendNotification() {
     try {
         // 1. Conectarse a RabbitMQ
         const connection = await amqp.connect(rabbitmqUrl);
+        // creamos un canal, que es donde reside la mayor parte de la API para realizar las operaciones:
         const channel = await connection.createChannel();
 
         // 2. Definir el exchange (si no existe, se creará)
@@ -14,7 +15,7 @@ async function sendNotification() {
         await channel.assertExchange(exchangeName, 'fanout', { durable: false });
 
         // 3. El mensaje que se va a enviar
-        const message = process.argv[2] || "¡Notificación genérica!";
+        const message = process.argv[2] || "¡Notificación a todos los consumer!";
         
         // 4. Publicar el mensaje en el exchange
         // La routing key se deja vacía ('') porque el exchange 'fanout' ignora este valor
